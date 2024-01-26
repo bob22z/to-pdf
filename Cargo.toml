@@ -1,0 +1,12 @@
+[package]
+name = "to-pdf"
+version = "0.1.0"
+edition = "2021"
+authors = ["Bob <bob22.zhang@gmail.com>"]
+license = "MIT"
+description = "Export & Preview as PDF"
+documentation = "https://docs.rs/to-pdf"
+repository = "https://github.com/bob22z/to-pdf"
+keywords = ["pdf"]
+
+[dependencies]
