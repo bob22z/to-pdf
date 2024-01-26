@@ -10,3 +10,16 @@ repository = "https://github.com/bob22z/to-pdf"
 keywords = ["pdf"]
 
 [dependencies]
+typst = { version = "0.10", git = "https://github.com/typst/typst", rev = "afc2826" }
+typst-pdf = { version = "0.10", git = "https://github.com/typst/typst", rev = "afc2826" }
+typst-svg = { version = "0.10", git = "https://github.com/typst/typst", rev = "afc2826" }
+comemo = { version = "0.3", git = "https://github.com/typst/comemo", rev = "ddb3773" }
+fontdb = { version = "0.16", default-features = false, features = ["memmap", "fontconfig"] }
+rayon = "1"
+time = { version = "0.3", default-features = false }
+dirs = "5"
+ecow = { version = "0.2", features = ["serde"] }
+flate2 = "1"
+parking_lot = "0.12"
+ureq = "2"
+tar = "0.4"
