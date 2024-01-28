@@ -53,32 +53,55 @@ impl ToPdf {
         })
     }
 
-    pub fn to_pdf(&self, source: String, time: OffsetDateTime) -> StrResult<Vec<u8>> {
-        let document = self.compile(source, time)?;
+    pub fn to_pdf(
+        &self,
+        template_source: String,
+        template_json: Option<String>,
+        time: OffsetDateTime,
+    ) -> StrResult<Vec<u8>> {
+        let document = self.compile(template_source, template_json, time)?;
 
         Ok(export_pdf(document))
     }
 
-    pub fn to_svg(&self, source: String, time: OffsetDateTime) -> StrResult<Vec<String>> {
-        let document = self.compile(source, time)?;
+    pub fn to_svg(
+        &self,
+        template_source: String,
+        template_json: Option<String>,
+        time: OffsetDateTime,
+    ) -> StrResult<Vec<String>> {
+        let document = self.compile(template_source, template_json, time)?;
 
         Ok(export_svg(document))
     }
 
-    fn compile(&self, source: String, time: OffsetDateTime) -> StrResult<Document> {
-        let world = self.with_source(source, time);
+    fn compile(
+        &self,
+        template_source: String,
+        template_json: Option<String>,
+        time: OffsetDateTime,
+    ) -> StrResult<Document> {
+        let world = self.with_source(template_source, template_json, time);
 
         let mut tracer = Tracer::new();
         typst::compile(&world, &mut tracer)
             .map_err(|errors| EcoString::from(format!("{:?}", errors)))
     }
 
-    fn with_source(&self, source: String, time: OffsetDateTime) -> ToPdfWithSource<'_> {
+    fn with_source(
+        &self,
+        template_source: String,
+        template_json: Option<String>,
+        time: OffsetDateTime,
+    ) -> ToPdfWithSource<'_> {
         let main_file_id = FileId::new(None, VirtualPath::new("main.typ"));
-        let main_source = Source::new(main_file_id, source);
+        let main_source = Source::new(main_file_id, template_source);
+
+        let main_json = template_json.unwrap_or("{}".into()).into_bytes().into();
         ToPdfWithSource {
             to_pdf: self,
             main_source,
+            main_json,
             time,
         }
     }
@@ -108,6 +131,7 @@ fn export_svg(document: Document) -> Vec<String> {
 struct ToPdfWithSource<'a> {
     to_pdf: &'a ToPdf,
     main_source: Source,
+    main_json: Bytes,
     time: OffsetDateTime,
 }
 
@@ -129,7 +153,11 @@ impl<'a> World for ToPdfWithSource<'a> {
     }
 
     fn file(&self, id: FileId) -> FileResult<Bytes> {
-        self.to_pdf.slot(id, |slot| slot.file(&self.to_pdf.root))
+        if id.vpath().as_rooted_path().to_str() == Some("/main.json") {
+            Ok(self.main_json.clone())
+        } else {
+            self.to_pdf.slot(id, |slot| slot.file(&self.to_pdf.root))
+        }
     }
 
     fn font(&self, index: usize) -> Option<Font> {
