@@ -61,12 +61,12 @@ let now = time::OffsetDateTime::now_utc();
 
 // Export to Pdf with typst text
 let pdf_content = to_pdf
-    .to_pdf(content.into(), Some(main_json.into()), now)
+    .to_pdf(template.into(), Some(json.into()), now)
     .unwrap();
 
 // Preview as Svg with typst text
 let svg_content = to_pdf
-    .to_svg(content.into(), Some(main_json.into()), now)
+    .to_svg(template.into(), Some(json.into()), now)
     .unwrap();
 ```
 
