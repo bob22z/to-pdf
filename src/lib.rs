@@ -3,4 +3,4 @@ mod fonts;
 mod package;
 mod to_pdf;
 
-pub use to_pdf::ToPdf;
+pub use {to_pdf::ToPdf, typst::diag::StrResult};
