@@ -3,4 +3,8 @@ mod fonts;
 mod package;
 mod to_pdf;
 
-pub use {to_pdf::ToPdf, typst::diag::StrResult};
+pub use {
+    ecow::{eco_format, EcoString},
+    to_pdf::ToPdf,
+    typst::diag::StrResult,
+};
