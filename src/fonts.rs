@@ -1,12 +1,14 @@
-use std::fs;
-use std::path::PathBuf;
-use std::sync::OnceLock;
+use std::{
+    fs,
+    path::{Path, PathBuf},
+    sync::OnceLock,
+};
 
 use fontdb::{Database, Source};
 use typst::text::{Font, FontBook, FontInfo};
 
 /// Search everything that is available.
-pub(crate) fn search_fonts(font_path: &PathBuf) -> (FontBook, Vec<FontSlot>) {
+pub(crate) fn search_fonts(font_path: &Path) -> (FontBook, Vec<FontSlot>) {
     let mut book = FontBook::new();
     let mut fonts = Vec::default();
     let mut db = Database::new();

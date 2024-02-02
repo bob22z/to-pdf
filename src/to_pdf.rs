@@ -32,7 +32,7 @@ pub struct ToPdf {
 }
 
 impl ToPdf {
-    pub fn new(font_path: &PathBuf) -> StrResult<Self> {
+    pub fn new(font_path: &Path) -> StrResult<Self> {
         let (book, fonts) = search_fonts(font_path);
 
         let root = {
